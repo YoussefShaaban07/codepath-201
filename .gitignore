@@ -25,3 +25,8 @@ Thumbs.db
 
 # NOTE: results/ is deliberately NOT ignored. Your run logs are evidence that
 # the test actually happened, and they're part of what gets graded. Commit them.
+
+# Local git bundle, produced only to hand the work over while the push to
+# GitHub was blocked. It is a snapshot of this repo's own history — not
+# something the repo should carry.
+*.bundle
