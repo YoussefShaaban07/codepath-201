@@ -272,6 +272,44 @@ def _split_long_section(body: str, budget: int, overlap: int) -> list[str]:
     return out
 
 
+def _pieces_for(body: str, header: str, budget: int, overlap: int) -> list[str]:
+    """
+    Split one section's body so that header + piece always fits the budget.
+
+    The subtlety is that a section which splits is labelled
+    `header (part n of m)`, not `header` — so the room left for the body
+    depends on how many pieces there turn out to be, and how many pieces there
+    turn out to be depends on the room. Reserving nothing for the suffix is
+    what produced 703-character chunks against a 700 budget.
+
+    Resolved by iterating to a fixed point: split, see how many pieces came
+    out, reserve for that many, split again. Piece count only ever rises as
+    room shrinks, so this converges; the cap is belt and braces.
+
+    One case this does not fix, deliberately: a heading longer than the whole
+    budget leaves no room for a body at all, and the chunk goes over. No
+    splitting strategy fixes that — the header alone doesn't fit — and a
+    heading of several hundred characters is corrupt input rather than a
+    document. Truncating it would mean a code path that never runs on a real
+    corpus, which is the same reason there is no minimum-size merge rule.
+    """
+    count = 1
+    pieces = [body]
+
+    for _ in range(4):
+        suffix = len(f" (part {count} of {count})") if count > 1 else 0
+        # max(..., 1) keeps room positive if a document has a heading so long
+        # that it fills the budget on its own.
+        room = max(budget - len(header) - suffix - 2, 1)
+
+        pieces = [body] if len(body) <= room else _split_long_section(body, room, overlap)
+        if len(pieces) == count:
+            return pieces
+        count = len(pieces)
+
+    return pieces
+
+
 def split_documents(documents: list[Document]) -> list[Chunk]:
     """
     Split documents into chunks on their Markdown section headings.
@@ -306,13 +344,7 @@ def split_documents(documents: list[Document]) -> list[Chunk]:
 
         for heading, body in sections:
             header = f"{title} — {heading}"
-            room = budget - len(header) - 2
-
-            pieces = (
-                [body]
-                if len(body) <= room
-                else _split_long_section(body, room, overlap)
-            )
+            pieces = _pieces_for(body, header, budget, overlap)
 
             for part, piece in enumerate(pieces, 1):
                 label = header
