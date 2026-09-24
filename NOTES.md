@@ -211,3 +211,50 @@ don't cover it, name the file. I read it against the near-miss list and left it
 as it is. Tightening a prompt I cannot yet run is guessing; the honest move is
 to name it as the untested half and test it in unit 2, where "Is there a cinema
 in Kestrelford?" is the first question I will put through it.
+
+---
+
+## Milestone 5 — repo check
+
+`python test.py`: 8 passed, 1 failed, 1 skipped. The failure and the skip are
+both the missing `GEMINI_API_KEY` — no `.env` in this environment. Everything
+that runs locally passes, including the embedding model and a Chroma cosine
+round trip.
+
+`python tools/smoke_test.py`: all checks passed, against the `practice` corpus
+and the cross-cutting checks (cosine collection, gate behaviour, cache, budget
+guard).
+
+The chunker across all four corpora:
+
+| Corpus | Chunks | Average | Produced by |
+|---|---|---|---|
+| city_guides | 95 | 317 | `split_documents` |
+| campus_life | 88 | 317 | `fallback_split` |
+| advice_threads | 27 | 478 | `fallback_split` |
+| practice | 41 | 425 | `fallback_split` |
+
+Only `city_guides` uses Markdown `##` headings, so it is the only corpus that
+takes the section-aware path. The other three have no structure to split on and
+fall through to fixed windows, which is the documented behaviour rather than a
+silent failure — a plain-text corpus degrades to the starter's chunking instead
+of becoming one chunk per file.
+
+### Still outstanding
+
+The generation stage has never run. Retrieval, the gate, and prompt assembly
+are all verified against real output; the model call is not. That means:
+
+- README "Sample Answer" has a real prompt and no answer.
+- Criterion 2 (every answer names a source) is untested — `app.py` builds the
+  sources line from retrieval metadata, so it should hold, but "should" is not
+  a measurement.
+- Criterion 5 (sources are correct) is untested for the same reason.
+- `GROUNDING_INSTRUCTION` is unexercised, which is the gap that matters most,
+  since the near-miss finding in Milestone 4 makes it the only thing standing
+  between an uncovered question and a made-up answer.
+
+To close all of these: put a key in `.env` and run
+
+    python app.py ask "What time does the bakery in Kestrelford sell out?" --show-prompt
+    python app.py ask "Is there a cinema in Kestrelford?"
