@@ -52,10 +52,26 @@ TOP_K = 5               # how many chunks to pull back per question
 #
 # LOWER IS BETTER: 0.3 is a close match, 0.9 is unrelated.
 #
-# 0.6 is a reasonable starting point, not a right answer. Milestone 4 has you
-# measure your own two groups of distances and put the cutoff in the gap.
-# Most corpora land somewhere between 0.45 and 0.75.
-THRESHOLD = 0.6
+# Milestone 4. Measured on city_guides at 95 section chunks, top_k=5:
+#
+#   in-corpus  (questions.QUESTIONS)     0.2275 .. 0.4683
+#   out-of-corpus (questions.OUT_OF_SCOPE) 0.8104 .. 0.9692
+#
+# The gap is 0.4683 .. 0.8104 and nothing lands inside it. Midpoint is 0.639.
+#
+# 0.70 rather than the midpoint, because of a third measurement: near-miss
+# questions — right town, uncovered fact — come back at 0.34 to 0.61, which is
+# inside the in-corpus band, not the gap. "Is there a cinema in Kestrelford?"
+# scores 0.3657, closer than three of my five real questions. No cutoff that
+# still accepts real questions can refuse those, so the gate's only real job is
+# the far group starting at 0.8104. Given that, the cost of a high cutoff is
+# near zero and the cost of a low one is refusing questions I can answer, so I
+# biased upward: 0.23 of headroom above my worst real question, 0.11 of margin
+# below the nearest false accept.
+#
+# The near misses are the grounding instruction's problem, not the gate's.
+# See README "My relevance cutoff".
+THRESHOLD = 0.70
 
 
 # ─── Models ──────────────────────────────────────────────────────────────────

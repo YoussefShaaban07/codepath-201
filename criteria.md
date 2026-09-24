@@ -84,8 +84,31 @@ I expect that one to sit closest to the cutoff, and I would rather name a
 target that survives one near-miss than a perfect score I then have to explain
 away.
 
-<!-- Milestone 4 fills in what the two groups of distances actually looked like,
-     directly underneath. The target above does not move. -->
+**What the distances actually looked like (Milestone 4).** Recorded here
+because this section asks for it. The 4-of-5 target above is unchanged.
+
+| | in-corpus (5) | out-of-corpus (5) |
+|---|---|---|
+| Best distance, range | 0.2275 – 0.4683 | 0.8104 – 0.9692 |
+
+A clean gap, 0.4683 to 0.8104, with nothing inside it. Cutoff set to **0.70**.
+At that cutoff all five out-of-corpus questions are refused and all five
+in-corpus questions pass, so on the evidence available today this criterion is
+at 5 of 5 against a target of 4.
+
+Two things I got wrong, both recorded because they are the useful part:
+
+- I predicted the ibuprofen question would be the closest of the five, because
+  nine of my documents mention minor injuries units. It is second-closest
+  (0.8351) and not close to the cutoff. The gap is far wider than I expected.
+- The prediction that mattered was the one I didn't make. My five out-of-corpus
+  questions are all from a different world, and a question from *this* world
+  that my documents simply don't answer — "Is there a cinema in Kestrelford?" —
+  scores 0.3657, closer than three of my five real questions. **No cutoff can
+  refuse that and still accept real questions.** So this criterion is weaker
+  than it reads: it measures the gate against obvious misses only, which is all
+  a distance threshold can do. Catching the near ones is the grounding
+  instruction's job, and I have not written a criterion that tests it.
 
 ---
 
