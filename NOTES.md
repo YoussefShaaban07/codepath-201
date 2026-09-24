@@ -98,3 +98,35 @@ Asked for separately in the brief, regardless of corpus choice:
     26 chunks total.
 
 **26.**
+
+---
+
+## Milestone 3 — after the swap
+
+    $ python app.py index
+      loaded   14 documents, 28,958 characters, ~2,068 characters per document
+      chunked  95 chunks, 317 characters on average (shortest 183, longest 661),
+               produced by chunker.py::split_documents
+
+| | starter (`fallback_split`) | mine (`split_documents`) |
+|---|---|---|
+| Chunks | 51 | 95 |
+| Average | 650 | 317 |
+| Shortest | 24 | 183 |
+| Longest | 800 | 661 |
+| Duplicate chunk texts | 9 | 0 |
+
+94 of the 95 are one whole `##` section. The 95th exists because
+`guide_accessibility.md` :: "Straightforward" is 758 characters with the header
+line and splits into two pieces at a paragraph break.
+
+The 24-character chunk is gone, because nothing is now cut at a position that
+can leave a 24-character remainder.
+
+The nine byte-identical `Practical notes` blocks are now nine distinct strings.
+Checked directly rather than assumed: counting distinct chunk texts gives 95 out
+of 95, against 9 collisions before.
+
+The minimum-size merge I hedged against in criterion 4 never came up — the
+smallest chunk is 183 characters and reads as a whole thought — so I did not
+write one. The criterion keeps its slack as written.

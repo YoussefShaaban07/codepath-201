@@ -27,8 +27,20 @@ CORPUS = os.getenv("AI201_CORPUS", "city_guides")
 # These are deliberately plain, generic numbers. Milestone 3 is where you
 # replace them with numbers that fit the documents you actually read.
 
-CHUNK_SIZE = 800        # characters per chunk
-CHUNK_OVERLAP = 120     # characters shared between neighbouring chunks
+# Milestone 3. These are NOT the fixed window the starter used — chunker.py
+# splits on the corpus's own `##` section headings, and these two are the
+# guards around that. The long reasoning is at the top of chunker.py.
+#
+# CHUNK_SIZE is a ceiling, not a target: a section under it is one whole chunk.
+# 700 because section chunks land at 183–758 characters and exactly one is over
+# it — guide_accessibility.md :: "Straightforward", three towns in three
+# paragraphs, which is better off as three chunks.
+#
+# CHUNK_OVERLAP only reaches the sentence-splitting path, which city_guides
+# never enters. Section-aware chunking replaces overlap with the
+# `Document — Section` header line repeated on every chunk.
+CHUNK_SIZE = 700        # maximum characters per chunk, header line included
+CHUNK_OVERLAP = 120     # characters carried over, sentence-split path only
 
 
 # ─── Retrieval (Milestone 4) ─────────────────────────────────────────────────
