@@ -1,6 +1,30 @@
-# The Unofficial Guide
+# The Unofficial Guide — Retrieval-Augmented Q&A
 
-Youssef Shaaban · AI201 Project 1 · corpus: **`city_guides`**
+A Python question-answering project over a fictional travel-guide corpus, with section-aware document chunking, source attribution, and a retrieval relevance gate.
+
+**Author:** Youssef Shaaban · **Course:** CodePath AI201 · **Corpus:** `city_guides`
+
+## Project at a glance
+
+| Area | Implementation |
+| --- | --- |
+| Retrieval | Chroma vector storage and document search |
+| Chunking | Markdown section boundaries with document and section labels |
+| Generation | Google Gemini API with source-grounding instructions |
+| Interfaces | Python CLI and Flask service |
+| Evaluation | Question sets, acceptance criteria, and recorded retrieval measurements |
+
+**Status:** Unit 1 documents the chunking and retrieval work. Its generated-answer example remains incomplete because the recorded run had no Gemini API key. Unit 2 below is a work-in-progress template.
+
+## Start here
+
+- [Setup and commands](RUNNING.md)
+- [Implementation notes](NOTES.md)
+- [Acceptance criteria](criteria.md)
+- [Unit 1: implementation and evidence](#unit-1)
+- [Unit 2: evaluation work in progress](#unit-2)
+
+The coursework write-up and its recorded results follow.
 
 > How the starter works, and every command, is in `RUNNING.md`.
 > Working measurements and the reasoning behind each decision are in `NOTES.md`.
